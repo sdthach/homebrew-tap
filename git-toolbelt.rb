@@ -33,8 +33,13 @@ class GitToolbelt < Formula
     assert_path_exists bin/"git-main-branch"
     assert_path_exists bin/"getch"
 
-    system "git", "-C", testpath, "init", "-q"
-    ENV["PATH"] = "#{bin}:#{ENV["PATH"]}"
-    assert_equal "main", shell_output("git -C #{testpath} symbolic-ref --short HEAD").strip
+    # git-main-branch actually resolves the main branch. Force the default branch
+    # name and add a commit so the probe has a real branch to find, independent of
+    # the ambient init.defaultBranch (brew's sandbox leaves it as "master").
+    ENV.prepend_path "PATH", bin
+    system "git", "-C", testpath, "-c", "init.defaultBranch=main", "init", "-q"
+    system "git", "-C", testpath, "-c", "user.name=brew", "-c", "user.email=brew@example.com",
+           "commit", "-q", "--allow-empty", "-m", "init"
+    assert_equal "main", shell_output("git -C #{testpath} main-branch").strip
   end
 end
