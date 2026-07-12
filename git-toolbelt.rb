@@ -15,6 +15,8 @@ class GitToolbelt < Formula
 
   url "https://github.com/sdthach/git-toolbelt/archive/refs/tags/v1.12.0-fork.1.tar.gz"
   sha256 "bb02fdb972004cd80e931d25e5efd06e30b14ef194d54952fdf2c2ffe592e406"
+  # Pinned explicitly: Homebrew mis-parses the "-fork.N" tag down to a bare "1".
+  version "1.12.0-fork.1"
 
   head "https://github.com/sdthach/git-toolbelt.git", branch: "main"
 
