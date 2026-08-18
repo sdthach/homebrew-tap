@@ -1,22 +1,25 @@
 # Homebrew formula for the git-toolbelt fork (github.com/sdthach/git-toolbelt).
 #
-# This is the TAP copy that `brew` actually reads. The source of truth lives in
-# packaging/git-toolbelt.rb in sdthach/git-toolbelt; the url+sha256 below are
-# kept in sync automatically by that repo's .github/workflows/release.yml on
-# each pushed v* tag (see docs/maintaining-the-fork.md).
+# This file is the source of truth. The tap copy lives in
+# github.com/sdthach/homebrew-tap/git-toolbelt.rb and is kept in sync by
+# .github/workflows/release.yml (see docs/maintaining-the-fork.md).
+#
+# Homebrew and mise install the SAME artifact: the `git-toolbelt-X.Y.Z.tar.gz`
+# release asset built by scripts/build-dist.sh, which already ships its commands
+# flattened into bin/. That keeps the two distribution paths from drifting —
+# there is one tarball, one sha256, and one layout to reason about.
 #
 # INSTALL
-#   Stable (pinned tag):   brew install sdthach/tap/git-toolbelt
-#   HEAD (tip of main):    brew install --HEAD sdthach/tap/git-toolbelt
+#   Stable (pinned release):  brew install sdthach/tap/git-toolbelt
+#   HEAD (tip of main):       brew install --HEAD sdthach/tap/git-toolbelt
 class GitToolbelt < Formula
   desc "Helper commands and g+verb shortcuts to make everyday life with Git easier"
   homepage "https://github.com/sdthach/git-toolbelt"
   license "BSD-3-Clause"
 
-  url "https://github.com/sdthach/git-toolbelt/archive/refs/tags/v1.12.0-fork.1.tar.gz"
-  sha256 "bb02fdb972004cd80e931d25e5efd06e30b14ef194d54952fdf2c2ffe592e406"
-  # Pinned explicitly: Homebrew mis-parses the "-fork.N" tag down to a bare "1".
-  version "1.12.0-fork.1"
+  # --- Stable stanza (rewritten in the tap by .github/workflows/release.yml) ---
+  url "https://github.com/sdthach/git-toolbelt/releases/download/v2.0.0/git-toolbelt-2.0.0.tar.gz"
+  sha256 "6d67e50f48fb3cbeaa20008bcb8bf4c53df27f8eabb9d97d6c8b24c075048026"
 
   head "https://github.com/sdthach/git-toolbelt.git", branch: "main"
 
@@ -24,8 +27,15 @@ class GitToolbelt < Formula
   depends_on "coreutils"
 
   def install
-    bin.install Dir["git-*"]          # the ~62 git-<verb> subcommands
-    bin.install Dir["portmanteaus/*"] # the g+verb shortcuts (getch, gush, gome, ...)
+    # A stable build unpacks the release tarball, which already has the
+    # flattened bin/. A --HEAD build gets the repo layout instead, where the
+    # commands are still split between the root and portmanteaus/.
+    if File.directory?("bin")
+      bin.install Dir["bin/*"]
+    else
+      bin.install Dir["git-*"]          # the 63 git-<verb> subcommands
+      bin.install Dir["portmanteaus/*"] # the g+verb shortcuts (getch, gush, gome, ...)
+    end
   end
 
   test do
