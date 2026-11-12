@@ -18,8 +18,8 @@ class GitToolbelt < Formula
   license "BSD-3-Clause"
 
   # --- Stable stanza (rewritten in the tap by .github/workflows/release.yml) ---
-  url "https://github.com/sdthach/git-toolbelt/releases/download/v2.1.0/git-toolbelt-2.1.0.tar.gz"
-  sha256 "b786c19000e3ed7d925e29085dca63e04d0b330044c17c76cd7451bbe8ce638b"
+  url "https://github.com/sdthach/git-toolbelt/releases/download/v2.1.1/git-toolbelt-2.1.1.tar.gz"
+  sha256 "0d27895360877c87f3daccbeba14993ec83f37253ad11e610f80a66651c22d9c"
 
   head "https://github.com/sdthach/git-toolbelt.git", branch: "main"
 
